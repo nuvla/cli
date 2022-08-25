@@ -1,0 +1,9 @@
+[deployment]
+JOB_PORT=5000
+AGENT_PORT=5080
+COMPOSE_PROJECT_NAME="nuvlaedge_{}"
+VPN_INTERFACE_NAME="vpn_{}"
+
+[nuvla]
+API_KEY="credential/f9706abe-8651-4221-9769-2da7872e225b"
+API_SECRET="vv7CrB.bEsQBC.YUWA6u.8z7U5m.DZ4fh6"

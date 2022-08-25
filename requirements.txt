@@ -1,0 +1,10 @@
+docker
+pydantic
+nuvla-api
+toml
+tabulate
+pyshp
+shapely
+fabric>=2
+typer
+rich
