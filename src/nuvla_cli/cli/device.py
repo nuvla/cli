@@ -8,7 +8,7 @@ from rich.table import Table
 from rich.console import Console
 
 from nuvla_cli.helpers.device.manager import DeviceManager
-from nuvla_cli.helpers.device.device import DeviceConfiguration
+from nuvla_cli.helpers.device import DeviceConfiguration
 
 app = typer.Typer()
 logger: logging.Logger = logging.getLogger(__name__)

@@ -1,7 +1,6 @@
 """
 
 """
-import json
 import os
 import logging
 from typing import Dict, List, NoReturn
@@ -70,7 +69,8 @@ class CLINuvlaHandler:
 
         # CLI Status
         self.cli_constants: CLIConstants = CLIConstants()
-        self.cli_status: CLIStatus = self.gather_cli_status()
+        if self.nuvla_client.is_authenticated():
+            self.cli_status: CLIStatus = self.gather_cli_status()
 
     def parse_edge_into_feet(self, it_status: CLIStatus, edge_data: CLIEdgeData,
                              tag_name: str):
@@ -101,6 +101,13 @@ class CLINuvlaHandler:
                 self.parse_edge_into_feet(it_status, it_edge, it_fleet)
 
         return it_status
+
+    def log_to_nuvla(self, key: str, secret: str) -> NoReturn:
+        """
+        Logs in to nuvla using the api keys and secret provided via env. variables
+        :return: None
+        """
+        self.nuvla_client.login_apikey(key=key, secret=secret)
 
     def get_nuvlaedge_state(self, ne_id: str) -> str:
         """

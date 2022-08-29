@@ -16,12 +16,15 @@ from nuvla_cli.common.cli_common import Colors
 
 app_cli = typer.Typer()
 
+# Create subcommands
 app_cli.add_typer(fleet.app, name='fleet')
 app_cli.add_typer(edge.app, name='edge')
-app_cli.add_typer(user.app, name='user')
 app_cli.add_typer(info.app, name='info')
 app_cli.add_typer(device.app, name='device')
 app_cli.add_typer(deploy.app, name='deploy')
+
+# Add top tier common commands
+app_cli.registered_commands += user.app.registered_commands
 
 logger: logging.Logger = logging.getLogger()
 cli_settings: CLISettings = CLISettings()
@@ -30,8 +33,9 @@ cli_settings: CLISettings = CLISettings()
 @app_cli.command(name='clear')
 def clear_edges():
     """
+    Clears all the Edges instances for the user created by the CLI
 
-    :return:
+    :return: None
     """
     print('\n' + Colors.WARNING + '\tWARNING:' + Colors.ENDC +
           'This command removes all the Edges created in\n')
