@@ -6,8 +6,9 @@ from sys import platform
 import logging
 
 import typer
+from rich import print
 
-from nuvla_cli.cli import fleet, deploy, device, info, user, edge, start
+from nuvla_cli.cli import fleet, device, user, edge, start
 from nuvla_cli.cli.edge import remove_edge
 from nuvla_cli.cli_nuvla_handler import CLINuvlaHandler
 from nuvla_cli.cli_settings import CLISettings
@@ -20,10 +21,8 @@ app_cli = typer.Typer()
 # Create subcommands
 app_cli.add_typer(fleet.app, name='fleet')
 app_cli.add_typer(edge.app, name='edge')
-app_cli.add_typer(info.app, name='info')
 app_cli.add_typer(device.app, name='device')
-app_cli.add_typer(deploy.app, name='deploy')
-app_cli.add_typer(start.app, name='start')
+app_cli.add_typer(start.app, name='start', help='Starts an edge or a fleet')
 
 # Add top tier common commands
 app_cli.registered_commands += user.app.registered_commands
@@ -60,7 +59,7 @@ def clear_edges():
 @app_cli.command(name='version')
 def print_cli_version():
     logger.debug('Version print')
-    print(f'Nuvla CLI Version {cli_settings}')
+    print(f'Nuvla CLI Version {cli_settings.CLI_VERSION}')
 
 
 def check_os():

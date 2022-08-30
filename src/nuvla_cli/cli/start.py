@@ -15,11 +15,10 @@ logger: logging.Logger = logging.getLogger(__name__)
 
 
 @app.command(name='edge', help='Starts new edge engine')
-def start_edge(uuid: str, fleet: str = ''):
+def start_edge(uuid: str):
     """
 
     :param uuid:
-    :param fleet:
     :return:
     """
     # Create NuvlaIO instance

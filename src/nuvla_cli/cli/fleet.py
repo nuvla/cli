@@ -7,7 +7,7 @@ from typing import List, Tuple
 import typer
 from tabulate import tabulate
 
-from nuvla_cli.cli import edge
+from nuvla_cli.cli import edge, start
 from nuvla_cli.cli_nuvla_handler import CLINuvlaHandler
 from nuvla_cli.common import geo_location
 from nuvla_cli.common.cli_common import print_warning
@@ -130,6 +130,13 @@ def start_fleet(fleet_name: str):
     :return:
     """
     nuvla: CLINuvlaHandler = CLINuvlaHandler()
-    if fleet_name not in nuvla.cli_status.fleets.keys():
+
+    fleet_uuids: List[str] = nuvla.cli_status.fleets.get(fleet_name, [])
+    if not fleet_uuids:
         print_warning(f'Fleet {fleet_name} not present. Create it first...')
         return
+
+    for uuid in fleet_uuids:
+        start.start_edge(uuid)
+
+
