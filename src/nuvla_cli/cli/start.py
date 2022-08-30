@@ -33,6 +33,11 @@ def start_edge(uuid: str):
         # print(nuvla.device_manager.devices_map.keys())
         nuvla.device_manager.devices_map['DUMMY'].start(it_edge.uuid)
 
+    else:
+        # FUTURE: implement remote deployments
+        # Now, it will be deployed locally
+        nuvla.device_manager.devices_map['DUMMY'].start(it_edge.uuid)
+
 
 @app.command(name='fleet', help='Starts edge components of a fleet')
 def start_fleet(fleet_name: str):

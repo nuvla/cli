@@ -50,6 +50,8 @@ class DeviceManager:
         :return:
         """
         for k, v in self.manager_data.devices.items():
+            if not v.device_type:
+                continue
             self.devices_map[k] = DEVICE_FACTORY[v.device_type](v)
 
     def load_devices_file(self) -> DeviceManagerData:

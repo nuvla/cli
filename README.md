@@ -1,7 +1,5 @@
 # CLI Manual
 
-All the dependencies of the program are installed in the nacho-nb Exoscale VM
-
 Install python3 Requirements 
 ```shell
 $ pip install -r requirements.txt
@@ -88,6 +86,7 @@ This command will:\
 
      
 ```shell
-$ ./nuvla_cli demos geo --country France --count 10
-$ ./nuvla_cli demos geo --country France --count 10 --dummy
+$ ./nuvla_cli fleet create MyFleetName --count 10 --dummy
+$ ./nuvla_cli fleet glocate --name MyFleetName --country France
+$ ./nuvla_cli fleet start MyFleetName
 ```
