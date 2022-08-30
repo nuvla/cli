@@ -10,6 +10,8 @@ from tabulate import tabulate
 from nuvla_cli.cli import edge
 from nuvla_cli.cli_nuvla_handler import CLINuvlaHandler
 from nuvla_cli.common import geo_location
+from nuvla_cli.common.cli_common import print_warning
+
 
 app = typer.Typer()
 logger: logging.Logger = logging.getLogger(__name__)
@@ -119,3 +121,15 @@ def geo_locate_fleet(name: str, country: str, create: bool = False, count: int =
     for uuid, geo in zip(nuvla.cli_status.fleets.get(name), coords):
         geo_location.locate_nuvlaedge(nuvla, geo, uuid)
 
+
+@app.command(name='start')
+def start_fleet(fleet_name: str):
+    """
+
+    :param fleet_name:
+    :return:
+    """
+    nuvla: CLINuvlaHandler = CLINuvlaHandler()
+    if fleet_name not in nuvla.cli_status.fleets.keys():
+        print_warning(f'Fleet {fleet_name} not present. Create it first...')
+        return

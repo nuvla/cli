@@ -11,6 +11,7 @@ from tabulate import tabulate
 
 from nuvla_cli.helpers.edge import CLIEdgeData
 from nuvla_cli.common import geo_location
+from nuvla_cli.common.cli_common import print_warning
 
 
 app = typer.Typer()
@@ -53,6 +54,7 @@ def create_edge(name: str = '', description: str = '', dummy: bool = False,
 
     if dummy:
         new_edge.tags.append(nuvla.cli_constants.CLI_DUMMY_TAG)
+        new_edge.refresh_interval = 36000
 
     nuvla.create_new_edge(new_edge)
 
@@ -80,9 +82,9 @@ def list_edges():
 
     edge_list: List = []
     for uuid, edge in nuvla.cli_status.edges.items():
-        edge_list.append([edge.name, uuid, edge.fleets])
+        edge_list.append([edge.name, uuid, edge.fleets, edge.dummy])
     print(tabulate(edge_list,
-                   headers=['Name', 'NuvlaEdge UUID', 'Fleets'],
+                   headers=['Name', 'NuvlaEdge UUID', 'Fleets', 'Dummy'],
                    tablefmt='orgtbl',
                    showindex=True))
 
@@ -93,6 +95,27 @@ def geo_locate_edge(uuid: str, country: str):
     # Create NuvlaIO instance
     nuvla: CLINuvlaHandler = CLINuvlaHandler()
     if uuid not in nuvla.cli_status.edges.keys():
-        print(f'Edge with ID: {uuid} does not exist')
+        print_warning(f'Edge with ID: {uuid} does not exist')
     coordinates: List = geo_location.generate_random_coordinate(count=1, country=country)
     geo_location.locate_nuvlaedge(nuvla, coordinates[0], uuid)
+
+
+@app.command(name='start', help='Starts a NuvlaEdge engine depending how it was '
+                                'configured in creation: local, dummy and'
+                                ' (Future) remote')
+def start_edge(uuid: str, address: str = ''):
+    # Create NuvlaIO instance
+    nuvla: CLINuvlaHandler = CLINuvlaHandler()
+
+    it_edge: CLIEdgeData = nuvla.cli_status.edges.get(uuid)
+    if not it_edge:
+        print_warning(f'Edge with ID: {uuid} does not exist')
+
+    if it_edge.dummy:
+        logger.info(f'Starting dummy device')
+
+    if not address:
+        logger.info(f'Starting edge {uuid} locally')
+    else:
+        logger.info(f'Starting edge {uuid} remotely in device {address}')
+

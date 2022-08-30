@@ -13,7 +13,7 @@ from fabric import Connection
 from fabric.runners import Result
 
 from nuvla_cli.helpers.edge import CLIEdgeData
-from nuvla_cli.cli_nuvla_handler import CLISettings
+from nuvla_cli.cli_settings import CLISettings
 from nuvla_cli.common.cli_common import print_success
 from nuvla_cli.helpers.engine import EngineDeploymentConfig, generate_engine_config
 

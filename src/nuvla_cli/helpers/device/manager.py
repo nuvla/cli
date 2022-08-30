@@ -10,9 +10,9 @@ from typing import Dict, NoReturn
 
 from pydantic import BaseModel
 
-from nuvla_cli.cli_nuvla_handler import CLISettings
+from nuvla_cli.cli_settings import CLISettings
 from nuvla_cli.helpers.device.device import (DeviceConfiguration, Device, DEVICE_FACTORY,
-                                       DeviceTypes)
+                                             DeviceTypes)
 from nuvla_cli.common.cli_common import print_success, print_warning
 
 
@@ -33,6 +33,17 @@ class DeviceManager:
         self.devices_map: Dict[str, Device] = {}  # Device map with address as Key
         self.populate_devices()
 
+        self.add_dummy(DeviceConfiguration(
+            address='dummy',
+            user='dummy'
+        ))
+
+    def add_dummy(self, dev_config: DeviceConfiguration):
+        self.logger.info('Adding default dummy device')
+        self.devices_map[DeviceTypes.DUMMY.name] = \
+            DEVICE_FACTORY[DeviceTypes.DUMMY.name](dev_config)
+        self.manager_data.devices[dev_config.address] = dev_config
+
     def populate_devices(self):
         """
 
@@ -46,6 +57,7 @@ class DeviceManager:
 
         :return:
         """
+        self.logger.info('Loading saved devices')
         if os.path.exists(self.cli_settings.devices_file):
             with open(self.cli_settings.devices_file, 'r') as devices_file:
                 return DeviceManagerData.parse_obj(json.load(devices_file))
@@ -85,11 +97,10 @@ class DeviceManager:
 
         dev_type: DeviceTypes = DeviceTypes.REMOTE
         if dummy:
-            dev_type = DeviceTypes.DUMMY
+            return
 
         elif self.is_local(device_config.address):
-            dev_type = DeviceTypes.LOCAL
-            device_config.hostname = socket.gethostname()
+            return
 
         self.logger.info(f'Creating {dev_type.name} device with address '
                          f'{device_config.address}')

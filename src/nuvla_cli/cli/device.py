@@ -37,6 +37,7 @@ def remove_device(address: str):
 @app.command(name='list')
 def list_devices():
     dev_manager: DeviceManager = DeviceManager()
+    print(dev_manager.devices_map)
     print('\n\tCurrently registered devices: \n')
     table = Table("Hostname", "Address", "User", "Online")
     for k, v in dev_manager.manager_data.devices.items():

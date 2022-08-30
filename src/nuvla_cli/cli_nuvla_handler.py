@@ -1,55 +1,24 @@
 """
 
 """
-import os
 import logging
 from typing import Dict, List, NoReturn
 
-from pydantic import BaseModel, validator
+from pydantic import BaseModel
 from nuvla.api import Api
 from nuvla.api.models import CimiResponse, CimiCollection
 
+from nuvla_cli.cli_settings import CLIConstants
 from nuvla_cli.helpers.edge import CLIEdgeData
 from nuvla.api.api import NuvlaError
-
-
-class CLISettings(BaseModel):
-    CLI_VERSION: str = '1.0.0'
-    NUVLA_CLI_PATH: str = os.path.expanduser('~/.nuvla/cli/')
-    DEVICES_FILE: str = '{}.devices'
-    UUIDS_FILE: str = '{}.nuvla_uuids'
-    DEPLOYMENTS_FILE: str = '{}.deployments'
-    STATUS_FILE: str = '{}.status'
-    BASE_DEPLOYMENT_COMMAND: str = 'docker-compose -p {project_name} {files} {action}'
-
-    @validator('NUVLA_CLI_PATH')
-    def expand_path(cls, v):
-        if v.startswith('~'):
-            return os.path.expanduser(v)
-        else:
-            return v
-
-    @property
-    def status_file(self):
-        return self.STATUS_FILE.format(self.NUVLA_CLI_PATH)
-
-    @property
-    def devices_file(self):
-        return self.DEVICES_FILE.format(self.NUVLA_CLI_PATH)
+from nuvla_cli.helpers.device.manager import DeviceManager
 
 
 class CLIStatus(BaseModel):
     default_edge_count: int = 0
     edges: Dict[str, CLIEdgeData] = {}
     fleets: Dict[str, List[str]] = {}
-
-
-class CLIConstants(BaseModel):
-    DEFAULT_NAME: str = '[CLI] NuvlaEdge_'
-    CLI_TAG: str = 'cli.created=True'
-    CLI_DUMMY_TAG: str = 'cli.dummy=True'
-    CLI_FLEET_PREFIX: str = 'cli.fleet.name='
-    FLEET_DEFAULT_NAME: str = '[{fleet_name}] NuvlaEdge_{cnt}'
+    deployments: Dict[str, Dict] = {}
 
 
 class CLINuvlaHandler:
@@ -71,6 +40,9 @@ class CLINuvlaHandler:
         self.cli_constants: CLIConstants = CLIConstants()
         if self.nuvla_client.is_authenticated():
             self.cli_status: CLIStatus = self.gather_cli_status()
+
+        # Load devices
+        self.device_manager: DeviceManager = DeviceManager()
 
     def parse_edge_into_feet(self, it_status: CLIStatus, edge_data: CLIEdgeData,
                              tag_name: str):
@@ -94,6 +66,7 @@ class CLINuvlaHandler:
         for i in cli_edges.resources:
             it_data = i.data
             it_edge: CLIEdgeData = CLIEdgeData.parse_obj(it_data)
+            it_edge.dummy = "cli.created=True" in i.data.get('tags')
             it_status.edges[it_edge.uuid] = it_edge
             edge_fleets: List[str] = [i for i in it_edge.tags
                                       if self.cli_constants.CLI_FLEET_PREFIX in i]

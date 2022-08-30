@@ -7,9 +7,10 @@ import logging
 
 import typer
 
-from nuvla_cli.cli import fleet, edge, info, user, device, deploy
+from nuvla_cli.cli import fleet, deploy, device, info, user, edge, start
 from nuvla_cli.cli.edge import remove_edge
-from nuvla_cli.cli_nuvla_handler import CLINuvlaHandler, CLISettings
+from nuvla_cli.cli_nuvla_handler import CLINuvlaHandler
+from nuvla_cli.cli_settings import CLISettings
 
 # Main command line interface app
 from nuvla_cli.common.cli_common import Colors
@@ -22,6 +23,7 @@ app_cli.add_typer(edge.app, name='edge')
 app_cli.add_typer(info.app, name='info')
 app_cli.add_typer(device.app, name='device')
 app_cli.add_typer(deploy.app, name='deploy')
+app_cli.add_typer(start.app, name='start')
 
 # Add top tier common commands
 app_cli.registered_commands += user.app.registered_commands
