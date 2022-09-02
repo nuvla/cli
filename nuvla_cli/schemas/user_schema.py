@@ -9,8 +9,8 @@ from ..common.common import NuvlaID
 
 
 class UserSchema(BaseSettings):
-    API_KEY: str = Field('', env='API_KEY')
-    API_SECRET: str = Field('', env='API_SECRET')
+    API_KEY: str = Field('', env='NUVLA_API_KEY')
+    API_SECRET: str = Field('', env='NUVLA_API_SECRET')
     name: Optional[str]
     updated: Optional[datetime]
     created: Optional[datetime]

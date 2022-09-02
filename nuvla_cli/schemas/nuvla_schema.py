@@ -11,8 +11,8 @@ class NuvlaSchema(BaseSettings):
     nuvla_endpoint: str = Field('https://nuvla.io', env='NUVLA_ENDPOINT')
 
     # User
-    api_key: str = Field(None, env='API_KEY')
-    api_secret: str = Field(None, env='API_SECRET')
+    api_key: str = Field(None, env='NUVLA_API_KEY')
+    api_secret: str = Field(None, env='NUVLA_API_SECRET')
 
 
 class NuvlaIOCLI(BaseModel):
