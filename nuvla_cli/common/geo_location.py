@@ -8,13 +8,12 @@ import random
 
 import shapefile
 from shapely.geometry import shape, Point
-
-from nuvla_cli.cli_nuvla_handler import CLINuvlaHandler
+from nuvla.api import Api as NuvlaAPI
 
 logger: logging.Logger = logging.getLogger(__name__)
 
 
-def locate_nuvlaedge(nuvla: CLINuvlaHandler, location: Tuple, nuvlaedge_uuid: str):
+def locate_nuvlaedge(nuvla: NuvlaAPI, location: Tuple, nuvlaedge_uuid: str):
     """
 
     :param nuvla:
@@ -22,7 +21,7 @@ def locate_nuvlaedge(nuvla: CLINuvlaHandler, location: Tuple, nuvlaedge_uuid: st
     :param nuvlaedge_uuid:
     :return:
     """
-    nuvla.nuvla_client.edit(nuvlaedge_uuid, data={'location': location})
+    nuvla.edit(nuvlaedge_uuid, data={'location': location})
 
 
 def generate_random_coordinate(count: int, country: str,

@@ -1,13 +1,22 @@
-"""
+""" Common utilities for CLI """
 
-"""
-import logging
-from typing import Dict
-import toml
-from typing import NoReturn
+from typing import List, NoReturn
 
 
-logger: logging.Logger = logging.getLogger(__name__)
+class NuvlaID(str):
+    @classmethod
+    def __get_validators__(cls):
+        yield cls.validate_nuvla_id
+
+    @classmethod
+    def validate_nuvla_id(cls, nuvla_id: str) -> str:
+        id_parts: List[str] = nuvla_id.split('/')
+        if len(id_parts) != 2:
+            print('Validator called')
+            raise ValueError("Nuvla ID's format must me a string with format: "
+                             "<resource_id>/<unique-identifier>")
+
+        return nuvla_id
 
 
 class Colors:
@@ -23,15 +32,6 @@ class Colors:
 
 
 colors: Colors = Colors()
-
-
-def import_env_variables(envs_file: str = 'configuration.toml') -> Dict:
-    """
-
-    :param envs_file:
-    :return:
-    """
-    return toml.load(envs_file)['nuvla']
 
 
 def print_warning(message: str) -> NoReturn:

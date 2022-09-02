@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "nuvla-cli"
+version = "0.1.0"
+description = ""
+authors = ["Nacho <nacho@sixsq.com>"]
+readme = "README.md"
+packages = [{include = "nuvla_cli"}]
+
+[tool.poetry.scripts]
+nuvla-cli = "nuvla_cli.__main__:app_cli"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+typer = {version = "^0.6.1", extras = ["all"]}
+docker = "^6.0.0"
+pydantic = "^1.10.0"
+nuvla-api = "^3.0.8"
+toml = "^0.10.2"
+fabric = "^2.7.1"
+pyshp = "^2.3.1"
+Shapely = "^1.8.4"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

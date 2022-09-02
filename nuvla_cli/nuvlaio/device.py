@@ -3,9 +3,10 @@
 """
 import json
 import logging
-import time
+import os
+from subprocess import Popen, DEVNULL, check_output
 from abc import ABC, abstractmethod
-from typing import Optional, Dict, Callable
+from typing import Optional, Dict, Callable, List
 from enum import Enum
 
 from fabric import Connection
@@ -13,13 +14,24 @@ from fabric.runners import Result
 from pydantic import BaseModel
 from nuvla.api import Api
 
-from nuvla_cli.helpers.engine import EngineDeploymentConfig
+from ..schemas.engine_schema import EngineSchema, engine_cte
 
 
-class DeviceTypes(Enum):
+class DeviceTypes(str, Enum):
     REMOTE = 'REMOTE'
     LOCAL = 'LOCAL'
     DUMMY = 'DUMMY'
+
+    @staticmethod
+    def from_str(label):
+        if label in ('remote', 'REMOTE'):
+            return DeviceTypes.REMOTE
+        elif label in ('local', 'LOCAL'):
+            return DeviceTypes.LOCAL
+        elif not label or label in ('dummy', 'DUMMY'):
+            return DeviceTypes.DUMMY
+        else:
+            raise NotImplementedError
 
 
 class DeviceConfiguration(BaseModel):
@@ -30,7 +42,7 @@ class DeviceConfiguration(BaseModel):
     docker: Optional[str]
     docker_compose: Optional[str]
     pub_key: Optional[str]
-    deployments: Dict[str, EngineDeploymentConfig] = {}
+    deployments: Dict[str, EngineSchema] = {}
     online: bool = False
     device_type: Optional[str]
 
@@ -45,21 +57,25 @@ class Device(ABC):
         self.device_config: DeviceConfiguration = device_config
 
     @abstractmethod
-    def start(self, uuid: str):
+    def start(self, config: EngineSchema):
         """
         Starts a nuvlaedge engine
-        :param uuid: engine unique id
+        :param config:
         :return: None
         """
         ...
 
     @abstractmethod
-    def stop(self, uuid: str):
+    def stop(self, project_name: str):
         """
         Stops a nuvlaedge engine
-        :param uuid: Engine unique id
+        :param project_name:
         :return: None
         """
+        ...
+
+    @abstractmethod
+    def gather_present_engines(self):
         ...
 
 
@@ -111,7 +127,7 @@ class RemoteDevice(Device):
         self.device_config.docker_compose = docker_compose_version
         return True
 
-    def start(self, uuid: str):
+    def start(self, config: EngineSchema):
         # 1.- Copy docker-compose
         # 2.- Parse config to env variables
         # 3.- Launch
@@ -120,30 +136,84 @@ class RemoteDevice(Device):
     def stop(self, uuid: str):
         pass
 
+    def gather_present_engines(self):
+        ...
+
 
 class LocalDevice(Device):
     def __init__(self, device_config: DeviceConfiguration):
         super().__init__(device_config)
         self.logger: logging.Logger = logging.getLogger(self.__class__.__name__)
 
-    def start(self, uuid: str):
-        pass
+    @staticmethod
+    def generate_deployment_config(uuid, n):
+        it_conf: EngineSchema = EngineSchema(
+            JOB_PORT=5000 + n,
+            AGENT_PORT=5080 + n,
+            NUVLABOX_UUID=uuid,
+            COMPOSE_PROJECT_NAME='nuvlaedge_{}'.format(n),
+            VPN_INTERFACE_NAME='vpn_{}'.format(n),
+            EXCLUDED_MONITORS='geolocation'
+        )
+        return it_conf
 
-    def stop(self, uuid: str):
-        pass
+    def start(self, config: EngineSchema):
+
+        self.logger.info('Starting engine locally')
+        deployment_envs: Dict = os.environ.copy()
+        deployment_envs.update(config.dict())
+        for k, v in deployment_envs.items():
+            deployment_envs[k] = str(v)
+
+        deployment_command: str = engine_cte.BASE_DEPLOYMENT_COMMAND.format(
+            project_name=config.COMPOSE_PROJECT_NAME,
+            files='-f docker-compose.yml',
+            action='up')
+
+        Popen(deployment_command.split(),
+              env=deployment_envs,
+              stdout=DEVNULL,
+              stderr=DEVNULL)
+
+    def stop(self, project_name: str):
+        stop_command: str = engine_cte.BASE_DEPLOYMENT_COMMAND.format(
+            project_name=project_name,
+            files='-f docker-compose.yml',
+            action='down'
+        )
+        Popen(stop_command.split(),
+              stdout=DEVNULL,
+              stderr=DEVNULL)
+
+    def gather_present_engines(self) -> List:
+        """
+
+        :return:
+        """
+        result = check_output(['docker', 'compose', 'ls', '--format', 'json'])\
+            .decode('utf-8')
+
+        engine_names: List = [name.get('Name') for name in json.loads(result)]
+        return engine_names
 
 
 class DummyDevice(Device):
-    def __init__(self, device_config: DeviceConfiguration):
-        super().__init__(device_config)
+    def __init__(self, config: DeviceConfiguration):
+        super().__init__(config)
         self.logger: logging.Logger = logging.getLogger(self.__class__.__name__)
 
-    def start(self, uuid: str):
+    def start(self, config: EngineSchema):
+        """
+
+        :param config:
+        :return:
+        """
+        uuid = config.NUVLABOX_UUID
         self.logger.info(f'Starting dummy device')
         nuvla_client: Api = Api()
         info = nuvla_client._cimi_post('{}/activate'.format(uuid))
 
-        self.logger.info(f'{uuid} Activated')
+        self.logger.debug(f'{uuid} Activated')
         nuvla_client: Api = Api(persist_cookie=False, reauthenticate=True, login_creds={
             'key': info.get('api-key'),
             'secret': info.get('secret-key')
@@ -166,6 +236,9 @@ class DummyDevice(Device):
 
     def stop(self, uuid: str):
         pass
+
+    def gather_present_engines(self):
+        ...
 
 
 DEVICE_FACTORY: Dict[str, Callable] = {

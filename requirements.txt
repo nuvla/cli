@@ -1,3 +1,5 @@
+typer
+rich
 docker
 pydantic
 nuvla-api
@@ -6,5 +8,3 @@ tabulate
 pyshp
 shapely
 fabric>=2
-typer
-rich
