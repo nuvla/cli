@@ -13,7 +13,7 @@ from ..common.common import print_warning, print_success
 
 
 class NuvlaIO:
-    def __init__(self):
+    def __init__(self, gather_data: bool = True):
         """
 
         """
@@ -26,7 +26,7 @@ class NuvlaIO:
         self.user_info: UserSchema = UserSchema()
         self.session_info: SessionSchema = SessionSchema()
 
-        if self.nuvla_client.is_authenticated():
+        if self.nuvla_client.is_authenticated() and gather_data:
             self.gather_user_info()
 
     def gather_user_info(self) -> NoReturn:
@@ -47,7 +47,7 @@ class NuvlaIO:
         Logs in to nuvla using the api keys and secret provided via env. variables
         :return: None
         """
-        self.nuvla_client.login_apikey(key=key, secret=secret)
+        # self.nuvla_client.login_apikey(key=key, secret=secret)
 
         if self.nuvla_client.is_authenticated():
             session_info = self.nuvla_client.get(self.nuvla_client.current_session())
@@ -72,7 +72,11 @@ class NuvlaIO:
         else:
             print_warning('No keys provided via any of the three options')
 
-        self.gather_user_info()
+        if self.nuvla_client.is_authenticated():
+            print_success('Succesfully authenticated')
+            self.gather_user_info()
+        else:
+            print_warning('Something went wrong')
 
         print_success(f'Successfully logged in as {self.user_info.name}')
 

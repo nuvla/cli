@@ -35,13 +35,19 @@ def create_edge(name: str = typer.Option('', help='Edges name to be created'),
         print_success(f'Edge created: {uuid}')
 
 
-@app.command(name='fleet', help='Creates a new Fleet of Edges in Nuvla')
-def create_fleet(name: str, count: int = 10, dummy: bool = False):
+@app.command(name='fleet')
+def create_fleet(name: str = typer.Option(..., help='Fleet name desired. Must be unique,'
+                                                    ' as it works as identifier'),
+                 count: int = typer.Option(10, help='# of Edges to create within the'
+                                                    ' fleet'),
+                 dummy: bool = typer.Option(False, help='Create a fleet of dummy edges')):
     """
+    Creates a new Fleet of Edges in Nuvla
 
-    :param name:
-    :param count:
-    :param dummy:
+
+    :param name: Fleet name desired. Must be unique, as it works as identifier
+    :param count: # of Edges to create within the fleet
+    :param dummy: Create a fleet of dummy edges
     :return:
     """
     logger.debug(f'Creating {name} NuvlaEdge')
@@ -50,6 +56,6 @@ def create_fleet(name: str, count: int = 10, dummy: bool = False):
     it_edge.create_fleet(name=name, count=count, dummy=dummy)
 
 
-@app.command(name='device', help='Creates a new CLI device instance.')
-def create_device(address: str, user: str, port: int = 22):
-    ...
+# @app.command(name='device', help='Creates a new CLI device instance.')
+# def create_device(address: str, user: str, port: int = 22):
+#     ...

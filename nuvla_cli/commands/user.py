@@ -10,26 +10,29 @@ logger: logging.Logger = logging.getLogger(__name__)
 
 
 @app.command(name='login')
-def login(key: str = '', secret: str = '', config_file: str = ''):
+def login(key: str = typer.Option('', help='Nuvla API key'),
+          secret: str = typer.Option('', help='Nuvla API Secret'),
+          config_file: str = typer.Option('', help='Optional configuration file path '
+                                                   'where the keys are stored.')) \
+        -> None:
     """
-    Login to Nuvla. The login is persistent and only with API keys
+    Login to Nuvla. The login is persistent and only with API keys. To create the Key pair
+    go to Nuvla/Credentials sections and add a new Nuvla API credential.
 
-    :param key:
-    :param secret:
-    :param config_file: Optional configuration file path where the keys are stored.
-    :return: None
+    Login is possible via 3 ways: Environmental variables (NUVLA_API_KEY and
+    NUVLA_API_SECRET), arguments (key and secret) or via toml configuration file
+
     """
-    nuvla: NuvlaIO = NuvlaIO()
+    nuvla: NuvlaIO = NuvlaIO(gather_data=False)
 
     nuvla.log_to_nuvla(key, secret, config_file)
 
 
 @app.command(name='logout')
-def logout():
+def logout() -> None:
     """
-
-    :return:
+    Removes the local Nuvla persistent session and stops any open connection
     """
-    nuvla: NuvlaIO = NuvlaIO()
+    nuvla: NuvlaIO = NuvlaIO(gather_data=False)
 
     nuvla.logout()

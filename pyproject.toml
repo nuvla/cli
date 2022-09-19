@@ -10,7 +10,7 @@ packages = [{include = "nuvla_cli"}]
 nuvla-cli = "nuvla_cli.__main__:app_cli"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.8"
 typer = {version = "^0.6.1", extras = ["all"]}
 docker = "^6.0.0"
 pydantic = "^1.10.0"

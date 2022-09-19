@@ -11,11 +11,9 @@ logger: logging.Logger = logging.getLogger(__name__)
 
 
 @app.command(name='edge')
-def stop_edge(uuid: str):
+def stop_edge(uuid: str = typer.Option(..., help='NuvlaEdge uuid to be stopped')):
     """
-
-    :param uuid:
-    :return:
+    Stops a local NuvlaEdge engine
     """
     deployer: NuvlaEdgeEngine = NuvlaEdgeEngine()
 
@@ -23,6 +21,9 @@ def stop_edge(uuid: str):
 
 
 @app.command(name='fleet')
-def stop_fleet(fleet_name: str):
+def stop_fleet(fleet_name: str = typer.Option(..., help='Fleet name to be stopped')):
+    """
+    Stops a local fleet
+    """
     deployer: NuvlaEdgeEngine = NuvlaEdgeEngine()
     deployer.stop_fleet(fleet_name)

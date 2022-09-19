@@ -13,13 +13,12 @@ logger: logging.Logger = logging.getLogger(__name__)
 
 
 @app.command(name='edge')
-def locate_edge(uuid: str, country: str):
+def locate_edge(uuid: str = typer.Option(..., help='NuvlaEdge uuid to be geolocated'),
+                country: str = typer.Option(..., help=' Country within to locate the '
+                                                      'NuvlaEdge')) \
+        -> None:
     """
     Randomly locates the given edge within a country
-
-    :param uuid:
-    :param country:
-    :return:
     """
     edge: Edge = Edge()
 
@@ -36,13 +35,12 @@ def locate_edge(uuid: str, country: str):
 
 
 @app.command(name='fleet')
-def locate_fleet(name: str, country: str):
+def locate_fleet(name: str = typer.Option(..., help='Fleet name to be geolocated'),
+                 country: str = typer.Option(..., help=' Country within to locate the '
+                                                       'fleet')) \
+        -> None:
     """
     Randomly locates the given fleet within a country
-
-    :param name:
-    :param country:
-    :return:
     """
     edge: Edge = Edge()
 

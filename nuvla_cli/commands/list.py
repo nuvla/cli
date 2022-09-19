@@ -12,32 +12,32 @@ logger: logging.Logger = logging.getLogger(__name__)
 
 
 @app.command(name='edge')
-def list_edges():
+def list_edges() -> None:
     """
+    Retrieves and prints the list of NuvlaEdge created by CLI
 
-    :return:
     """
     it_edge: Edge = Edge()
     it_edge.list_edges()
 
 
 @app.command(name='fleet')
-def list_fleets():
+def list_fleets() -> None:
     """
+    Retrieves and prints the list of fleet names created by CLI
 
-    :return:
     """
     it_edge: Edge = Edge()
     it_edge.list_fleets()
 
 
-@app.command(name='engine')
-def list_engines():
-    """
-
-    :return:
-    """
-    deployer: NuvlaEdgeEngine = NuvlaEdgeEngine()
-
-    ...
+# @app.command(name='engine')
+# def list_engines():
+#     """
+#
+#     :return:
+#     """
+#     deployer: NuvlaEdgeEngine = NuvlaEdgeEngine()
+#
+#     ...
 

@@ -15,26 +15,26 @@ logger: logging.Logger = logging.getLogger(__name__)
 
 
 @app.command(name='edge')
-def start_edge(uuid: str, target_type: DeviceTypes = DeviceTypes.LOCAL):
+def start_edge(uuid: str = typer.Option(..., help='NuvlaEdge uuid to be started')):
     """
+    Starts a NuvlaEdge engine in the device running this CLI.
 
-    :param uuid:
-    :param target_type:
-    :return:
+    If the NuvlaEdge entity is created as dummy, it will perform the activation and
+    commissioning process
     """
     deployer: NuvlaEdgeEngine = NuvlaEdgeEngine()
 
-    deployer.start_engine(NuvlaID(uuid), target_type)
+    deployer.start_engine(NuvlaID(uuid), DeviceTypes.LOCAL)
 
 
 @app.command(name='fleet')
-def start_fleet(fleet_name: str, target_type: DeviceTypes = DeviceTypes.LOCAL):
+def start_fleet(fleet_name: str = typer.Option(..., help='Fleet name to be started')):
     """
+    Starts a Fleet in the device running this CLI.
 
-    :param target_type:
-    :param fleet_name:
-    :return:
+    If the fleet entity is created as dummy, it will perform the activation and
+    commissioning process
     """
     deployer: NuvlaEdgeEngine = NuvlaEdgeEngine()
 
-    deployer.start_fleet(fleet_name, target_type)
+    deployer.start_fleet(fleet_name, DeviceTypes.LOCAL)

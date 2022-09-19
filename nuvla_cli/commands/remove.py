@@ -11,10 +11,9 @@ logger: logging.Logger = logging.getLogger(__name__)
 
 
 @app.command(name='edge')
-def remove_edge(uuid: str):
+def remove_edge(uuid: str = typer.Option(..., help='NuvlaEdge unique uuid')) -> None:
     """
-
-    :return:
+    Removes a NuvlaEdge provided a UUID
     """
     it_edge: Edge = Edge()
 
@@ -22,11 +21,9 @@ def remove_edge(uuid: str):
 
 
 @app.command(name='fleet')
-def remove_fleet(name: str):
+def remove_fleet(name: str = typer.Option(..., help='Fleet unique name')) -> None:
     """
-
-    :param name:
-    :return:
+    Removes a Fleet of Nuvlaedge provided the unique fleet name
     """
     it_edge: Edge = Edge()
     it_edge.remove_fleet(name)
