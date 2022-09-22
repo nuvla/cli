@@ -3,29 +3,18 @@ import logging
 
 import typer
 
-from .commands import create, list, remove, locate, start, user, stop
+from .cli_builder import build_action_entity, build_entity_action
 from .nuvlaio.edge import Edge
 
 
-app_cli = typer.Typer()
+app_cli = typer.Typer(no_args_is_help=True)
 
-# Add commands
-app_cli.add_typer(create.app, name='create', help='Creates a new Nuvla entity: '
-                                                  'edge, fleet, user')
-app_cli.add_typer(list.app, name='list', help='Lists Nuvla Components')
-app_cli.add_typer(remove.app, name='remove', help='Deletes a Nuvla entity: edge, '
-                                                  'fleet')
-app_cli.add_typer(locate.app, name='locate', help='Geo-locates an edge or fleet within a'
-                                                  'country')
-app_cli.add_typer(start.app, name='start', help='Runs a NuvlaEdge engine or imitates one'
-                                                'when dummy')
-# app_cli.add_typer(user.app, name='user')
-app_cli.add_typer(stop.app, name='stop', help='Stops a NuvlaEdge engine (or fleet)')
+# build_action_entity(app_cli)
+build_entity_action(app_cli)
 
-app_cli.registered_commands += user.app.registered_commands
 
 logging.basicConfig(
-        level=logging.ERROR,
+        level=logging.DEBUG,
         format='[%(asctime)s] Line:%(lineno)d %(levelname)s - %(message)s',
         datefmt='%H:%M:%S'
     )
@@ -55,5 +44,10 @@ def clear_edges(force: bool = typer.Option(...,
             edge.remove_edge(nuvla_edge.data.get('id'))
 
 
+def main(version: str):
+    print('\n\n\nTHIS IS PRINT\n\n\n')
+
+
 if __name__ == '__main__':
-    app_cli()
+    app_cli(main)
+

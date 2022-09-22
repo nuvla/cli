@@ -4,9 +4,9 @@ from typing import List, Tuple
 
 import typer
 
-from ..nuvlaio.edge import Edge
-from ..common.common import print_warning
-from ..common.geo_location import generate_random_coordinate, locate_nuvlaedge
+from nuvla_cli.nuvlaio.edge import Edge
+from nuvla_cli.common.common import print_warning
+from nuvla_cli.common.geo_location import generate_random_coordinate, locate_nuvlaedge
 
 app = typer.Typer()
 logger: logging.Logger = logging.getLogger(__name__)

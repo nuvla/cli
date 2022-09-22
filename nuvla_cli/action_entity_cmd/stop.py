@@ -3,7 +3,7 @@ import logging
 
 import typer
 
-from ..nuvlaio.nuvlaedge_engine import NuvlaEdgeEngine
+from nuvla_cli.nuvlaio.nuvlaedge_engine import NuvlaEdgeEngine
 
 
 app = typer.Typer()

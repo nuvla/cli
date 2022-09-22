@@ -3,9 +3,7 @@ import logging
 
 import typer
 
-from ..common.common import NuvlaID
-from ..nuvlaio.nuvlaedge_engine import NuvlaEdgeEngine
-from ..nuvlaio.edge import Edge
+from nuvla_cli.nuvlaio.edge import Edge
 
 app = typer.Typer()
 logger: logging.Logger = logging.getLogger(__name__)
@@ -29,15 +27,4 @@ def list_fleets() -> None:
     """
     it_edge: Edge = Edge()
     it_edge.list_fleets()
-
-
-# @app.command(name='engine')
-# def list_engines():
-#     """
-#
-#     :return:
-#     """
-#     deployer: NuvlaEdgeEngine = NuvlaEdgeEngine()
-#
-#     ...
 

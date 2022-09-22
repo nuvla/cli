@@ -3,9 +3,9 @@ import logging
 
 import typer
 
-from ..common.common import NuvlaID, print_success, print_warning
-from ..schemas.edge_schema import EdgeSchema
-from ..nuvlaio.edge import Edge
+from nuvla_cli.common.common import NuvlaID, print_success, print_warning
+from nuvla_cli.schemas.edge_schema import EdgeSchema
+from nuvla_cli.nuvlaio.edge import Edge
 
 
 app = typer.Typer()
