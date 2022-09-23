@@ -9,7 +9,7 @@ from rich.progress import track
 
 from .edge import Edge
 from .device import Device, DeviceTypes, DEVICE_FACTORY, DeviceConfiguration
-from ..common.common import NuvlaID
+from ..common.common import NuvlaID, print_warning
 from ..schemas.edge_schema import EdgeSchema
 from ..schemas.engine_schema import engine_cte, EngineConstants, EngineSchema
 from ..schemas.nuvla_schema import cli_constants
@@ -121,6 +121,9 @@ class NuvlaEdgeEngine:
 
         if is_dummy:
             target = DeviceTypes.DUMMY
+        else:
+            print_warning('Non dummy fleets cannot be started yet.')
+            return
 
         device: Device = DEVICE_FACTORY[target.name](
             DeviceConfiguration(address='local',

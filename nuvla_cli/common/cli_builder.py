@@ -4,8 +4,8 @@ Auxiliary module to build the CLI commands
 
 import typer
 
-from .action_entity_cmd import list, create, remove, start, stop, locate
-from .entity_action_cmd import edge, fleet, user
+from nuvla_cli.action_entity_cmd import list, create, remove, start, stop, locate
+from nuvla_cli.entity_action_cmd import edge, fleet, user
 
 
 def build_action_entity(app_cli: typer.Typer) -> None:
