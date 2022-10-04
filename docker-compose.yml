@@ -53,7 +53,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - nuvlaedge-db:/srv/nuvlabox/shared
       - /:/rootfs:ro
-      - /home/pi/isolation/agent/code/:/opt/nuvlabox/
     ports:
       - 127.0.0.1:${AGENT_PORT}:80
     healthcheck:

@@ -66,19 +66,17 @@ class NuvlaIO:
             self.nuvla_client.login_apikey(key, secret)
 
         elif config_file:
-            print('Logging to Nuvla with configuration')
+            print('Logging to Nuvla with configuration not supported yet')
             # self.nuvla_client.login_apikey(key, secret)
 
         else:
-            print_warning('No keys provided via any of the three options')
+            print_warning('No keys provided via any of the two options: envs or '
+                          'CLI options')
+            return
 
         if self.nuvla_client.is_authenticated():
-            print_success('Succesfully authenticated')
             self.gather_user_info()
-        else:
-            print_warning('Something went wrong')
-
-        print_success(f'Successfully logged in as {self.user_info.name}')
+            print_success(f'Successfully logged in as {self.user_info.name}')
 
     def logout(self):
         if not self.nuvla_client.is_authenticated():

@@ -1,5 +1,4 @@
 # `nuvla-cli`
-
 **Usage**:
 
 ```console
