@@ -6,9 +6,16 @@ import logging
 from typing import List, Tuple
 import random
 
+import requests
 import shapefile
 from shapely.geometry import shape, Point
+from rich import print
 from nuvla.api import Api as NuvlaAPI
+
+from nuvla_cli.common.common import print_warning
+from nuvla_cli.common.constants import (COUNTRIES_FILE_DBF, COUNTRIES_FILE_SHP,
+                                        COUNTRIES_DBF_LINK, COUNTRIES_SHP_LINK,
+                                        GEOLOCATION_PATH)
 
 logger: logging.Logger = logging.getLogger(__name__)
 
@@ -24,9 +31,31 @@ def locate_nuvlaedge(nuvla: NuvlaAPI, location: Tuple, nuvlaedge_uuid: str):
     nuvla.edit(nuvlaedge_uuid, data={'location': location})
 
 
-def generate_random_coordinate(count: int, country: str,
-                               shp_location: str = 'data/geo/'
-                                                   'World_Countries.shp') -> List[Tuple]:
+def get_countries_location_files():
+    """
+    If not existent, gathers the required files
+    :return: None
+    """
+    GEOLOCATION_PATH.mkdir(exist_ok=True)
+    try:
+        if not COUNTRIES_FILE_SHP.exists():
+            print('Downloading shp file')
+            response: requests.Response = requests.get(COUNTRIES_SHP_LINK)
+            with COUNTRIES_FILE_SHP.open('w') as file:
+                file.write(response.content.decode('UTF-8'))
+
+        if not COUNTRIES_FILE_DBF.exists():
+            print('Downloading DBF file')
+            response: requests.Response = requests.get(COUNTRIES_DBF_LINK)
+            with COUNTRIES_FILE_DBF.open('w') as file:
+                file.write(response.content.decode('UTF-8'))
+
+    except requests.Timeout:
+        print_warning('Cannot download files, geolocation not possible')
+        exit(1)
+
+
+def generate_random_coordinate(count: int, country: str) -> List[Tuple]:
     """
     Inspired by
     https://gis.stackexchange.com/questions/164005/getting-random-coordinates-based-on-country
@@ -37,8 +66,11 @@ def generate_random_coordinate(count: int, country: str,
     """
     logger.info(f'Gathering {count} random locations in {country}')
 
+    # Retrieve
+    get_countries_location_files()
+
     # reading shapefile with pyshp library
-    shapes = shapefile.Reader(shp_location)
+    shapes = shapefile.Reader(COUNTRIES_FILE_SHP)
 
     # getting feature(s) that match the country name
     country = [s for s in shapes.records() if country in s][0]
