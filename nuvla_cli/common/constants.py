@@ -23,9 +23,12 @@ CONTINENTS_SHP_LINK: str = 'https://github.com/nuvla/cli/raw/main/data/geo/' \
 # countries
 COUNTRIES_FILE_DBF: Path = GEOLOCATION_PATH / 'World_Countries.dbf'
 COUNTRIES_FILE_SHP: Path = GEOLOCATION_PATH / 'World_Countries.shp'
-COUNTRIES_DBF_LINK: str = 'https://github.com/nuvla/cli/raw/main/data/geo/' \
-                           'World_Countries.dbf'
-COUNTRIES_SHP_LINK: str = 'https://github.com/nuvla/cli/raw/main/data/geo/' \
-                           'World_Countries.shp'
+DBF_MD5_SUM: str = '2cbdd25f1f93c788909023686acfd90e'
+COUNTRIES_DBF_LINK: str = 'https://raw.githubusercontent.com/nuvla/cli/main/data/geo/' \
+                          'World_Countries.dbf'
+
+SHP_MD5_SUM: str = '340e6fba7d3595b2147ac318d3c2215e'
+COUNTRIES_SHP_LINK: str = 'https://raw.githubusercontent.com/nuvla/cli/main/data/geo/' \
+                          'World_Countries.shp'
 
 

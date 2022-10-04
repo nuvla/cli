@@ -5,7 +5,7 @@ from typing import List, Tuple
 import typer
 
 from nuvla_cli.nuvlaio.edge import Edge
-from nuvla_cli.common.common import print_warning
+from nuvla_cli.common.common import print_warning, print_success
 from nuvla_cli.common.geo_location import generate_random_coordinate, locate_nuvlaedge
 
 app = typer.Typer()
@@ -32,6 +32,7 @@ def locate_edge(uuid: str = typer.Option(..., help='NuvlaEdge uuid to be geoloca
     )
 
     locate_nuvlaedge(edge.nuvla_api, coords[0], uuid)
+
 
 
 @app.command(name='fleet')

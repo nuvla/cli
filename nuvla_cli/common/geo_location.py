@@ -41,14 +41,14 @@ def get_countries_location_files():
         if not COUNTRIES_FILE_SHP.exists():
             print('Downloading shp file')
             response: requests.Response = requests.get(COUNTRIES_SHP_LINK)
-            with COUNTRIES_FILE_SHP.open('w') as file:
-                file.write(response.content.decode('UTF-8'))
+            with COUNTRIES_FILE_SHP.open('wb') as file:
+                file.write(response.content)
 
         if not COUNTRIES_FILE_DBF.exists():
             print('Downloading DBF file')
             response: requests.Response = requests.get(COUNTRIES_DBF_LINK)
-            with COUNTRIES_FILE_DBF.open('w') as file:
-                file.write(response.content.decode('UTF-8'))
+            with COUNTRIES_FILE_DBF.open('wb') as file:
+                file.write(response.content)
 
     except requests.Timeout:
         print_warning('Cannot download files, geolocation not possible')

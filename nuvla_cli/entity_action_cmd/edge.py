@@ -168,3 +168,4 @@ def geolocate_edge(nuvla_id: str = typer.Option(..., help='Unique Nuvla ID of th
     )
 
     locate_nuvlaedge(edge.nuvla_api, coords[0], nuvla_id)
+    print_success(f'Successfully located Edge in {country}: {coords[0]}')
