@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "nuvla-cli"
-version = "0.1.0"
-description = ""
+version = "0.0.1-alpha"
+description = "CLI tool for local management of Nuvla and NuvlaEdges via terminal"
 authors = ["Nacho <nacho@sixsq.com>"]
 readme = "README.md"
 packages = [{include = "nuvla_cli"}]

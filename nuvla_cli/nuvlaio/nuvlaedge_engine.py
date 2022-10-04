@@ -27,10 +27,12 @@ class NuvlaEdgeEngine:
         self.edge: Edge = Edge()
         self.engine_fleet_check: List[Thread] = []
 
-    def build_engine_configuration(self, present_engines: List[str], uuid: NuvlaID) \
+    def build_engine_configuration(self, present_engines: List[str], uuid: NuvlaID,
+                                   engine_files: List[str]) \
             -> EngineSchema:
         """
 
+        :param engine_files:
         :param uuid:
         :param present_engines:
         :return:
@@ -44,15 +46,18 @@ class NuvlaEdgeEngine:
             AGENT_PORT=self.BASE_ENGINE_CONFIG.AGENT_PORT + cnt,
             NUVLABOX_UUID=uuid,
             VPN_INTERFACE_NAME=self.BASE_ENGINE_CONFIG.VPN_INTERFACE_NAME + str(cnt),
-            COMPOSE_PROJECT_NAME=self.BASE_ENGINE_CONFIG.COMPOSE_PROJECT_NAME + str(cnt)
+            COMPOSE_PROJECT_NAME=self.BASE_ENGINE_CONFIG.COMPOSE_PROJECT_NAME + str(cnt),
+            engine_files=engine_files
         )
         return new_schema
 
     def generate_fleet_configuration(self,
                                      present_engines: List[str],
-                                     uuids: List[str]) -> List[EngineSchema]:
+                                     uuids: List[str],
+                                     engine_files: List[str]) -> List[EngineSchema]:
         """
 
+        :param engine_files:
         :param present_engines:
         :param uuids:
         :return:
@@ -71,15 +76,16 @@ class NuvlaEdgeEngine:
                     VPN_INTERFACE_NAME=self.BASE_ENGINE_CONFIG.VPN_INTERFACE_NAME + str(
                         cnt + i),
                     COMPOSE_PROJECT_NAME=(self.BASE_ENGINE_CONFIG.COMPOSE_PROJECT_NAME +
-                                          str(cnt + i))
+                                          str(cnt + i)),
+                    engine_files=engine_files
                 )
             )
         return configs
 
-    def start_engine(self, uuid: str, target: DeviceTypes):
+    def start_engine(self, uuid: str, target: DeviceTypes, engine_files: List[str]):
         """
 
-        :param is_fleet:
+        :param engine_files:
         :param uuid:
         :param target:
         :return:
@@ -95,7 +101,8 @@ class NuvlaEdgeEngine:
         if target != DeviceTypes.DUMMY:
             engine_config = \
                 self.build_engine_configuration(device.gather_present_engines(),
-                                                NuvlaID(uuid))
+                                                NuvlaID(uuid),
+                                                engine_files)
         device.start(engine_config)
         if target != DeviceTypes.DUMMY:
             self.edge.add_tags_to_edge(
@@ -104,9 +111,10 @@ class NuvlaEdgeEngine:
                       engine_cte.cli_engine_name_tag+engine_config.COMPOSE_PROJECT_NAME,
                       engine_cte.started_engine_tag])
 
-    def start_fleet(self, fleet_name: str, target: DeviceTypes):
+    def start_fleet(self, fleet_name: str, target: DeviceTypes, engine_files: List[str]):
         """
 
+        :param engine_files:
         :param fleet_name:
         :param target:
         :return:
@@ -122,16 +130,18 @@ class NuvlaEdgeEngine:
         if is_dummy:
             target = DeviceTypes.DUMMY
         else:
-            print_warning('Non dummy fleets cannot be started yet.')
+            print_warning('Non dummy fleets run not supported yet')
             return
 
         device: Device = DEVICE_FACTORY[target.name](
             DeviceConfiguration(address='local',
                                 user='local'))
         if not is_dummy:
-            engine_configurations: List[EngineSchema] = self.generate_fleet_configuration(
-                device.gather_present_engines(),
-                list(edges))
+            engine_configurations: List[EngineSchema] = \
+                self.generate_fleet_configuration(
+                    device.gather_present_engines(),
+                    list(edges),
+                    engine_files)
         else:
             engine_configurations: List[EngineSchema] = \
                 [EngineSchema(NUVLABOX_UUID=uuid) for uuid in edges]

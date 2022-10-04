@@ -1,9 +1,10 @@
-typer
-rich
+typer~=0.3.2
+rich~=12.5.1
 docker
-pydantic
+pydantic~=1.10.2
 nuvla-api
 toml
 pyshp
-shapely
+shapely~=1.8.4
 fabric>=2
+requests~=2.27.1
