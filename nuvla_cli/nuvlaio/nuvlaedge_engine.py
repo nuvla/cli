@@ -111,7 +111,7 @@ class NuvlaEdgeEngine:
                       engine_cte.cli_engine_name_tag+engine_config.COMPOSE_PROJECT_NAME,
                       engine_cte.started_engine_tag])
 
-    def start_fleet(self, fleet_name: str, target: DeviceTypes, engine_files: List[str]):
+    def start_fleet(self, fleet_name: str, target: DeviceTypes, engine_files: List[str] = None):
         """
 
         :param engine_files:
