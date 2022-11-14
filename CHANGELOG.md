@@ -4,6 +4,9 @@
 ### Added
 ### Changed
 
+## [0.0.1a5] - 14-11-2022
+### Changed
+- Default refresh period from 10H to 1 week
 
 ## [0.0.1a4] - 10-11-2022
 ### Changed

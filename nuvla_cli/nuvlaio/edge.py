@@ -137,7 +137,7 @@ class Edge:
 
         if dummy:
             it_edge_conf.tags.append(cli_constants.CLI_DUMMY_TAG)
-            it_edge_conf.refresh_interval = 36000
+            it_edge_conf.refresh_interval = 604_800  # Default refresh period of 1 week
 
         response: CimiResponse = self.nuvla_api.add(
             'nuvlabox',
