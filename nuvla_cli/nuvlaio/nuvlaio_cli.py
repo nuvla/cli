@@ -2,10 +2,12 @@
 
 """
 import logging
-from typing import NoReturn, Optional
+from typing import NoReturn
 
+from requests import Response
 from rich import print
-from nuvla.api import Api
+from nuvla_cli.nuvlaio.cli_api import CliApi as Api
+
 from nuvla.api.models import CimiResource
 
 from ..schemas.user_schema import (UserSchema, SessionSchema)
@@ -13,14 +15,14 @@ from ..common.common import print_warning, print_success
 
 
 class NuvlaIO:
-    def __init__(self, gather_data: bool = True):
+    def __init__(self, endpoint: str = 'https://nuvla.io', secure: bool = True, gather_data: bool = True):
         """
 
         """
         self.logger: logging.Logger = logging.getLogger(self.__class__.__name__)
 
         # Nuvla API instance
-        self.nuvla_client: Api = Api()
+        self.nuvla_client: Api = Api(endpoint=endpoint, insecure=not secure)
 
         # UserInfo
         self.user_info: UserSchema = UserSchema()
@@ -28,6 +30,8 @@ class NuvlaIO:
 
         if self.nuvla_client.is_authenticated() and gather_data:
             self.gather_user_info()
+        else:
+            print_warning(f'Not authenticated')
 
     def gather_user_info(self) -> NoReturn:
         """
@@ -58,16 +62,19 @@ class NuvlaIO:
 
         if self.user_info.API_KEY and self.user_info.API_SECRET:
             print('Logging to Nuvla with environmental variables')
-            self.nuvla_client.login_apikey(self.user_info.API_KEY,
-                                           self.user_info.API_SECRET)
+
+            response: Response = self.nuvla_client.login_apikey(self.user_info.API_KEY,
+                                                                self.user_info.API_SECRET)
+            print(response.status_code)
 
         elif key and secret:
             print('Logging to Nuvla with arguments')
-            self.nuvla_client.login_apikey(key, secret)
+            response: Response = self.nuvla_client.login_apikey(key, secret)
 
         elif config_file:
             print('Logging to Nuvla with configuration not supported yet')
             # self.nuvla_client.login_apikey(key, secret)
+            return
 
         else:
             print_warning('No keys provided via any of the two options: envs or '
@@ -77,6 +84,8 @@ class NuvlaIO:
         if self.nuvla_client.is_authenticated():
             self.gather_user_info()
             print_success(f'Successfully logged in as {self.user_info.name}')
+        else:
+            print_warning(f'Not successfully authenticated with code: {response.status_code}')
 
     def logout(self):
         if not self.nuvla_client.is_authenticated():

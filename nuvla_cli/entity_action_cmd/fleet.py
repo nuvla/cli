@@ -5,10 +5,9 @@ import logging
 from typing import List, Tuple
 
 import typer
-from rich import print
 
 from nuvla_cli.nuvlaio.edge import Edge
-from nuvla_cli.common.common import NuvlaID, print_success, print_warning
+from nuvla_cli.common.common import print_warning
 from nuvla_cli.nuvlaio.device import DeviceTypes
 from nuvla_cli.nuvlaio.nuvlaedge_engine import NuvlaEdgeEngine
 from nuvla_cli.common.geo_location import generate_random_coordinate, locate_nuvlaedge
@@ -34,7 +33,8 @@ def create_fleet(name: str = typer.Option(..., help='Fleet name desired. Must be
 
 
 @app.command(name='start')
-def start_fleet(fleet_name: str = typer.Option(..., help='Fleet name to be started')):
+def start_fleet(fleet_name: str = typer.Option(..., help='Fleet name to be started'),
+                engine_file: str = typer.Option('', help='.yml file to use in the start of the engines')):
     """
     Starts a Fleet in the device running this CLI. Only for dummy fleets
 
@@ -43,7 +43,7 @@ def start_fleet(fleet_name: str = typer.Option(..., help='Fleet name to be start
     """
     deployer: NuvlaEdgeEngine = NuvlaEdgeEngine()
 
-    deployer.start_fleet(fleet_name, DeviceTypes.LOCAL)
+    deployer.start_fleet(fleet_name, DeviceTypes.LOCAL, engine_files=[engine_file])
 
 
 @app.command(name='geolocate')
@@ -74,7 +74,10 @@ def remove_fleet(name: str = typer.Option(..., help='Fleet unique name')) -> Non
     """
     Removes a Fleet of Nuvlaedge provided the unique fleet name
     """
+    print(f'Creating edge class...')
     it_edge: Edge = Edge()
+
+    print(f'Removing fleet')
     it_edge.remove_fleet(name)
 
 

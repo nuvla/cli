@@ -6,7 +6,6 @@ from typing import List, Tuple
 
 import typer
 from rich import print
-from rich.pretty import pprint
 from pathlib import Path
 
 from nuvla_cli.common.common import NuvlaID, print_success, print_warning
@@ -25,7 +24,8 @@ def create(name: str = typer.Option('', help='Edges name to be created'),
            description: str = typer.Option('', help='Edge descriptions'),
            dummy: bool = typer.Option(False, help='Create a dummy Edge'),
            fleet_name: str = typer.Option('', help='Attach created Edge to existent '
-                                                   'fleet')):
+                                                   'fleet'),
+           vpn: bool = typer.Option(False, help='Whether or not to create the Edge with VPN associated')):
     """
     Creates a new NuvlaEdge
     """
@@ -41,7 +41,8 @@ def create(name: str = typer.Option('', help='Edges name to be created'),
         name=name,
         description=description,
         dummy=dummy,
-        fleet_name=fleet_name)
+        fleet_name=fleet_name,
+        vpn=vpn)
 
     if uuid:
         print_success(f'Edge created: {uuid}')
@@ -102,10 +103,9 @@ def gather_engine_version(version: str, release_handler: ReleaseControl):
 
 
 @app.command(name='start')
-def start_edge(nuvla_id: str = typer.Option(..., help='Unique Nuvla ID of the NuvlaEdge '
-                                                      'identifier'),
-               engine_version: str = typer.Option('', help='Engine version to be'
-                                                           'deployed')):
+def start_edge(nuvla_id: str = typer.Option(..., help='Unique Nuvla ID of the NuvlaEdge identifier'),
+               engine_version: str = typer.Option('', help='Engine version to be deployed'),
+               engine_file_path: str = typer.Option('', help='File to be used to deploy the edge')):
     """
     Starts a NuvlaEdge engine in the device running this CLI.
 
@@ -129,9 +129,7 @@ def start_edge(nuvla_id: str = typer.Option(..., help='Unique Nuvla ID of the Nu
 
     deployer: NuvlaEdgeEngine = NuvlaEdgeEngine()
 
-    deployer.start_engine(NuvlaID(nuvla_id),
-                          DeviceTypes.LOCAL,
-                          engine_files)
+    deployer.start_engine(NuvlaID(nuvla_id), DeviceTypes.LOCAL, engine_files)
 
 
 @app.command(name='stop')

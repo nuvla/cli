@@ -13,7 +13,10 @@ logger: logging.Logger = logging.getLogger(__name__)
 def login(key: str = typer.Option('', help='Nuvla API key'),
           secret: str = typer.Option('', help='Nuvla API Secret'),
           config_file: str = typer.Option('', help='Optional configuration file path '
-                                                   'where the keys are stored.')) \
+                                                   'where the keys are stored.'),
+          endpoint: str = typer.Option('https://nuvla.io',
+                                       help='Optional configuration for a different Nuvla endpoint'),
+          secure: bool = typer.Option(True, help='Whether or not the endpoint is https')) \
         -> None:
     """
     Login to Nuvla. The login is persistent and only with API keys. To create the Key pair
@@ -23,16 +26,18 @@ def login(key: str = typer.Option('', help='Nuvla API key'),
     NUVLA_API_SECRET), arguments (key and secret) or via toml configuration file
 
     """
-    nuvla: NuvlaIO = NuvlaIO(gather_data=False)
+    nuvla: NuvlaIO = NuvlaIO(endpoint=endpoint, secure=secure, gather_data=False)
 
     nuvla.log_to_nuvla(key, secret, config_file)
 
 
 @app.command(name='logout')
-def logout() -> None:
+def logout(endpoint: str = typer.Option('https://nuvla.io',
+                                        help='Optional configuration for a different Nuvla endpoint'),
+           secure: bool = typer.Option(True, help='Whether or not the endpoint is https')) -> None:
     """
     Removes the local Nuvla persistent session and stops any open connection
     """
-    nuvla: NuvlaIO = NuvlaIO(gather_data=False)
+    nuvla: NuvlaIO = NuvlaIO(endpoint=endpoint, secure=secure, gather_data=False)
 
     nuvla.logout()

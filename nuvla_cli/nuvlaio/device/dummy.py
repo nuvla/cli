@@ -4,7 +4,7 @@ Dummy device module implementation
 
 import logging
 
-from nuvla.api import Api
+from nuvla_cli.nuvlaio.cli_api import CliApi as Api
 
 from .device import Device, DeviceConfiguration
 from ...schemas.engine_schema import EngineSchema

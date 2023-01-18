@@ -4,6 +4,13 @@
 ### Added
 ### Changed
 
+## [0.0.1a6] - 14-11-2022
+### Added
+- Optional VPN edge configuration on creation
+- Added optional Nuvla endpoint with https://nuvla.io as default.
+### Changed
+- Support for fleet starts in local machine (Limited functionality)
+
 ## [0.0.1a5] - 14-11-2022
 ### Changed
 - Default refresh period from 10H to 1 week

@@ -1,5 +1,4 @@
 import logging
-import time
 from typing import List, Set
 from threading import Thread
 
@@ -11,7 +10,7 @@ from .edge import Edge
 from .device import Device, DeviceTypes, DEVICE_FACTORY, DeviceConfiguration
 from ..common.common import NuvlaID, print_warning
 from ..schemas.edge_schema import EdgeSchema
-from ..schemas.engine_schema import engine_cte, EngineConstants, EngineSchema
+from ..schemas.engine_schema import engine_cte, EngineSchema
 from ..schemas.nuvla_schema import cli_constants
 
 
@@ -45,6 +44,7 @@ class NuvlaEdgeEngine:
             JOB_PORT=self.BASE_ENGINE_CONFIG.JOB_PORT + cnt,
             AGENT_PORT=self.BASE_ENGINE_CONFIG.AGENT_PORT + cnt,
             NUVLABOX_UUID=uuid,
+            NUVLAEDGE_UUID=uuid,
             VPN_INTERFACE_NAME=self.BASE_ENGINE_CONFIG.VPN_INTERFACE_NAME + str(cnt),
             COMPOSE_PROJECT_NAME=self.BASE_ENGINE_CONFIG.COMPOSE_PROJECT_NAME + str(cnt),
             engine_files=engine_files
@@ -54,7 +54,8 @@ class NuvlaEdgeEngine:
     def generate_fleet_configuration(self,
                                      present_engines: List[str],
                                      uuids: List[str],
-                                     engine_files: List[str]) -> List[EngineSchema]:
+                                     engine_files: List[str],
+                                     fleet_name: str) -> List[EngineSchema]:
         """
 
         :param engine_files:
@@ -73,10 +74,10 @@ class NuvlaEdgeEngine:
                     JOB_PORT=self.BASE_ENGINE_CONFIG.JOB_PORT + cnt + i,
                     AGENT_PORT=self.BASE_ENGINE_CONFIG.AGENT_PORT + cnt + i,
                     NUVLABOX_UUID=uuid,
+                    NUVLAEDGE_UUID=uuid,
                     VPN_INTERFACE_NAME=self.BASE_ENGINE_CONFIG.VPN_INTERFACE_NAME + str(
                         cnt + i),
-                    COMPOSE_PROJECT_NAME=(self.BASE_ENGINE_CONFIG.COMPOSE_PROJECT_NAME +
-                                          str(cnt + i)),
+                    COMPOSE_PROJECT_NAME=(fleet_name.lower() + '_' + str(cnt + i)),
                     engine_files=engine_files
                 )
             )
@@ -97,7 +98,7 @@ class NuvlaEdgeEngine:
 
         device: Device = DEVICE_FACTORY[target.name](DeviceConfiguration(address='local',
                                                                          user='local'))
-        engine_config = EngineSchema(NUVLABOX_UUID=uuid)
+        engine_config = EngineSchema(NUVLABOX_UUID=uuid, NUVLAEDGE_UUID=uuid)
         if target != DeviceTypes.DUMMY:
             engine_config = \
                 self.build_engine_configuration(device.gather_present_engines(),
@@ -129,9 +130,6 @@ class NuvlaEdgeEngine:
 
         if is_dummy:
             target = DeviceTypes.DUMMY
-        else:
-            print_warning('Non dummy fleets run not supported yet')
-            return
 
         device: Device = DEVICE_FACTORY[target.name](
             DeviceConfiguration(address='local',
@@ -141,13 +139,14 @@ class NuvlaEdgeEngine:
                 self.generate_fleet_configuration(
                     device.gather_present_engines(),
                     list(edges),
-                    engine_files)
+                    engine_files,
+                    fleet_name
+                )
         else:
             engine_configurations: List[EngineSchema] = \
-                [EngineSchema(NUVLABOX_UUID=uuid) for uuid in edges]
+                [EngineSchema(NUVLABOX_UUID=uuid, NUVLAEDGE_UUID=uuid) for uuid in edges]
 
-        for i in track(engine_configurations,
-                       description=f'Starting fleet {fleet_name}'):
+        for i in track(engine_configurations, description=f'Starting fleet {fleet_name}'):
             device.start(i)
             self.edge.add_tags_to_edge(
                 NuvlaID(i.NUVLABOX_UUID),

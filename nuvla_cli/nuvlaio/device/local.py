@@ -20,11 +20,12 @@ class LocalDevice(Device):
     def generate_deployment_config(uuid, n):
         it_conf: EngineSchema = EngineSchema(
             JOB_PORT=5000 + n,
-            AGENT_PORT=5080 + n,
+            AGENT_PORT=5500 + n,
             NUVLABOX_UUID=uuid,
+            NUVLAEDGE_UUID=uuid,
             COMPOSE_PROJECT_NAME='nuvlaedge_{}'.format(n),
             VPN_INTERFACE_NAME='vpn_{}'.format(n),
-            EXCLUDED_MONITORS='geolocation'
+            EXCLUDED_MONITORS='geolocation,container_stats_monitor'
         )
         return it_conf
 
@@ -44,6 +45,7 @@ class LocalDevice(Device):
             files=' -f '.join(config.engine_files),
             action='up')
         print(deployment_command)
+
         Popen(deployment_command.split(),
               env=deployment_envs,
               stdout=DEVNULL,

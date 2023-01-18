@@ -10,7 +10,7 @@ import requests
 import shapefile
 from shapely.geometry import shape, Point
 from rich import print
-from nuvla.api import Api as NuvlaAPI
+from nuvla_cli.nuvlaio.cli_api import CliApi as NuvlaAPI
 
 from nuvla_cli.common.common import print_warning
 from nuvla_cli.common.constants import (COUNTRIES_FILE_DBF, COUNTRIES_FILE_SHP,

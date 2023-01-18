@@ -8,7 +8,7 @@ from rich.table import Table
 from rich.console import Console
 from rich.progress import track
 
-from nuvla.api import Api as NuvlaAPI
+from nuvla_cli.nuvlaio.cli_api import CliApi as NuvlaAPI
 from nuvla.api.models import CimiCollection, CimiResponse
 
 from ..common.common import NuvlaID, print_warning
@@ -24,7 +24,6 @@ class Edge:
         if not self.nuvla_api.is_authenticated():
             print_warning('Not authenticated, login first')
             exit(0)
-            return
 
         # Gather all edge information
         self.edges: Dict[NuvlaID, EdgeSchema] = {}
@@ -104,9 +103,9 @@ class Edge:
         for i in track(range(count), description=f'Creating {count} edges in fleet '
                                                  f'{name}'):
             self.create_edge(edge_name.format(i), fleet_name=name, dummy=dummy,
-                             description='')
+                             description='', vpn=False)
 
-    def create_edge(self, name: str, description: str, dummy: bool, fleet_name: str) \
+    def create_edge(self, name: str, description: str, dummy: bool, fleet_name: str, vpn: bool) \
             -> NuvlaID:
         """
 
@@ -114,6 +113,7 @@ class Edge:
         :param description:
         :param dummy:
         :param fleet_name:
+        :param vpn:
         :return:
         """
         self.logger.debug(f'Creating new Edge')
@@ -137,13 +137,17 @@ class Edge:
 
         if dummy:
             it_edge_conf.tags.append(cli_constants.CLI_DUMMY_TAG)
-            it_edge_conf.refresh_interval = 604_800  # Default refresh period of 1 week
+            it_edge_conf.refresh_interval = 604800  # Default refresh period of 1 week
+
+        creation_data: dict = it_edge_conf.dict(exclude={'dummy', 'uuid', 'fleets', 'started', 'release', 'state'},
+                                                by_alias=True)
+
+        if not vpn:
+            creation_data.pop('vpn-server-id')
 
         response: CimiResponse = self.nuvla_api.add(
             'nuvlabox',
-            data=it_edge_conf.dict(exclude={'dummy', 'uuid', 'fleets', 'started',
-                                            'release', 'state'},
-                                   by_alias=True))
+            data=creation_data)
         it_edge_conf.uuid = response.data.get('resource-id')
         self.edges[it_edge_conf.uuid] = it_edge_conf
         return it_edge_conf.uuid
@@ -188,8 +192,8 @@ class Edge:
 
         ne_state: str = self.nuvla_api.search(
             'nuvlabox', filter=f'id=="{uuid}"').resources[0].data['state']
-
-        if ne_state in ['COMMISSIONED']:
+        if ne_state in ['COMMISSIONED', 'ACTIVATED']:
+            self.logger.info('Decommissioning...')
             self.nuvla_api.get(uuid + "/decommission")
 
         while ne_state not in ['DECOMMISSIONED', 'NEW']:
