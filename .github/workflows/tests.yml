@@ -1,1 +1,4 @@
 name: CLI TESTS
+
+on:
+  pull_request:

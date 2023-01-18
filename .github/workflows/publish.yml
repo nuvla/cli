@@ -30,5 +30,6 @@ jobs:
 
       - name: Publish package
         run: |
+          poetry config repositories.nuvla-cli https://pypi.org/project/nuvla-cli/
           poetry config pypi-token.pypi ${{ secrets.PYPI_NUVLA_CLI_TOKEN }}
           poetry publish -r "nuvla-cli"
