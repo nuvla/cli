@@ -82,12 +82,13 @@ class Edge:
             cnt=len(self.fleets[fleet_name]))
         return it_name
 
-    def create_fleet(self, name: str, count: int, dummy: bool):
+    def create_fleet(self, name: str, count: int, dummy: bool, telemetry_period: int):
         """
 
         :param name:
         :param count:
         :param dummy:
+        :param telemetry_period:
         :return:
         """
         if name in self.fleets.keys():
@@ -102,11 +103,20 @@ class Edge:
                                                                  cnt='{}')
         for i in track(range(count), description=f'Creating {count} edges in fleet '
                                                  f'{name}'):
-            self.create_edge(edge_name.format(i), fleet_name=name, dummy=dummy,
-                             description='', vpn=False)
+            self.create_edge(edge_name.format(i),
+                             fleet_name=name,
+                             dummy=dummy,
+                             description='',
+                             vpn=False,
+                             telemetry_period=telemetry_period)
 
-    def create_edge(self, name: str, description: str, dummy: bool, fleet_name: str, vpn: bool) \
-            -> NuvlaID:
+    def create_edge(self,
+                    name: str,
+                    description: str,
+                    dummy: bool,
+                    fleet_name: str,
+                    vpn: bool,
+                    telemetry_period: int) -> NuvlaID:
         """
 
         :param name:
@@ -114,6 +124,7 @@ class Edge:
         :param dummy:
         :param fleet_name:
         :param vpn:
+        :param telemetry_period:
         :return:
         """
         self.logger.debug(f'Creating new Edge')
@@ -137,7 +148,7 @@ class Edge:
 
         if dummy:
             it_edge_conf.tags.append(cli_constants.CLI_DUMMY_TAG)
-            it_edge_conf.refresh_interval = 604800  # Default refresh period of 1 week
+            it_edge_conf.refresh_interval = telemetry_period  # Default refresh period of 30 week
 
         creation_data: dict = it_edge_conf.dict(exclude={'dummy', 'uuid', 'fleets', 'started', 'release', 'state'},
                                                 by_alias=True)

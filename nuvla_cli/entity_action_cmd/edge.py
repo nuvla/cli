@@ -25,7 +25,11 @@ def create(name: str = typer.Option('', help='Edges name to be created'),
            dummy: bool = typer.Option(False, help='Create a dummy Edge'),
            fleet_name: str = typer.Option('', help='Attach created Edge to existent '
                                                    'fleet'),
-           vpn: bool = typer.Option(False, help='Whether or not to create the Edge with VPN associated')):
+           vpn: bool = typer.Option(False, help='Whether or not to create the Edge '
+                                                'with VPN associated'),
+           telemetry_period: int = typer.Option(30, help='Expected telemetry period'
+                                                         ' of the involved NuvlaEdges')
+    ):
     """
     Creates a new NuvlaEdge
     """
@@ -42,7 +46,8 @@ def create(name: str = typer.Option('', help='Edges name to be created'),
         description=description,
         dummy=dummy,
         fleet_name=fleet_name,
-        vpn=vpn)
+        vpn=vpn,
+        telemetry_period=telemetry_period)
 
     if uuid:
         print_success(f'Edge created: {uuid}')

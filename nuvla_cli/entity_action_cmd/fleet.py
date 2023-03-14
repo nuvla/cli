@@ -22,14 +22,16 @@ def create_fleet(name: str = typer.Option(..., help='Fleet name desired. Must be
                                                     ' as it works as identifier'),
                  count: int = typer.Option(10, help='# of Edges to create within the'
                                                     ' fleet'),
-                 dummy: bool = typer.Option(False, help='Create a fleet of dummy edges')):
+                 dummy: bool = typer.Option(False, help='Create a fleet of dummy edges'),
+                 telemetry_period: int = typer.Option(10*365*24*60*60, help='Expected telemetry period'
+                                                               ' of the involved NuvlaEdges')):
     """
     Creates a new Fleet of Edges in Nuvla
     """
     logger.debug(f'Creating {name} NuvlaEdge')
 
     it_edge: Edge = Edge()
-    it_edge.create_fleet(name=name, count=count, dummy=dummy)
+    it_edge.create_fleet(name=name, count=count, dummy=dummy, telemetry_period=telemetry_period)
 
 
 @app.command(name='start')

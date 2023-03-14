@@ -310,7 +310,7 @@ python-versions = ">=2.7"
 
 [[package]]
 name = "pytest"
-version = "7.2.0"
+version = "7.2.1"
 description = "pytest: simple powerful testing with Python"
 category = "dev"
 optional = false
@@ -379,11 +379,11 @@ use-chardet-on-py3 = ["chardet (>=3.0.2,<5)"]
 
 [[package]]
 name = "rich"
-version = "12.6.0"
+version = "13.1.0"
 description = "Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal"
 category = "main"
 optional = false
-python-versions = ">=3.6.3,<4.0.0"
+python-versions = ">=3.7.0"
 
 [package.dependencies]
 commonmark = ">=0.9.0,<0.10.0"
@@ -484,7 +484,7 @@ test = ["websockets"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "8933d24f6f4607b44af73557fa83852f54a930611212f16357644a69a0781459"
+content-hash = "d7ab280d6dd7794edcc0e51df8f99f4deff94c8db05f441d7d1abfab349ac418"
 
 [metadata.files]
 attrs = [
@@ -785,8 +785,8 @@ pyshp = [
     {file = "pyshp-2.3.1.tar.gz", hash = "sha256:4caec82fd8dd096feba8217858068bacb2a3b5950f43c048c6dc32a3489d5af1"},
 ]
 pytest = [
-    {file = "pytest-7.2.0-py3-none-any.whl", hash = "sha256:892f933d339f068883b6fd5a459f03d85bfcb355e4981e146d2c7616c21fef71"},
-    {file = "pytest-7.2.0.tar.gz", hash = "sha256:c4014eb40e10f11f355ad4e3c2fb2c6c6d1919c73f3b5a433de4708202cade59"},
+    {file = "pytest-7.2.1-py3-none-any.whl", hash = "sha256:c7c6ca206e93355074ae32f7403e8ea12163b1163c976fee7d4d84027c162be5"},
+    {file = "pytest-7.2.1.tar.gz", hash = "sha256:d45e0952f3727241918b8fd0f376f5ff6b301cc0777c6f9a556935c92d8a7d42"},
 ]
 pytest-cov = [
     {file = "pytest-cov-3.0.0.tar.gz", hash = "sha256:e7f0f5b1617d2210a2cabc266dfe2f4c75a8d32fb89eafb7ad9d06f6d076d470"},
@@ -855,8 +855,8 @@ requests = [
     {file = "requests-2.27.1.tar.gz", hash = "sha256:68d7c56fd5a8999887728ef304a6d12edc7be74f1cfa47714fc8b414525c9a61"},
 ]
 rich = [
-    {file = "rich-12.6.0-py3-none-any.whl", hash = "sha256:a4eb26484f2c82589bd9a17c73d32a010b1e29d89f1604cd9bf3a2097b81bb5e"},
-    {file = "rich-12.6.0.tar.gz", hash = "sha256:ba3a3775974105c221d31141f2c116f4fd65c5ceb0698657a11e9f295ec93fd0"},
+    {file = "rich-13.1.0-py3-none-any.whl", hash = "sha256:f846bff22a43e8508aebf3f0f2410ce1c6f4cde429098bd58d91fde038c57299"},
+    {file = "rich-13.1.0.tar.gz", hash = "sha256:81c73a30b144bbcdedc13f4ea0b6ffd7fdc3b0d3cc259a9402309c8e4aee1964"},
 ]
 shapely = [
     {file = "Shapely-1.8.5.post1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:d048f93e42ba578b82758c15d8ae037d08e69d91d9872bca5a1895b118f4e2b0"},

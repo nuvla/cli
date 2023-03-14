@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nuvla-cli"
-version = "0.0.1-alpha6"
+version = "0.0.1-alpha7"
 description = "CLI tool for local management of Nuvla and NuvlaEdges via terminal"
 authors = ["Nacho <nacho@sixsq.com>"]
 readme = "README.md"
@@ -21,7 +21,7 @@ fabric = "^2.7.1"
 pyshp = "^2.3.1"
 Shapely = "^1.8.4"
 typer = "^0.7.0"
-rich = "^12.5.1"
+rich = "^13.0.1"
 
 
 [tool.poetry.group.dev.dependencies]
