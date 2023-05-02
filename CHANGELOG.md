@@ -2,8 +2,11 @@
 
 ## Unreleased
 ### Added
+ - Added decommissioning timeout
 ### Changed
-
+ - Removed old action-entity build
+ - Fixed force delete of single edges when bulk deleting
+ - Updated dependencies version: typer, invoke, pydantic and fabric
 ## [0.0.1a6] - 14-11-2022
 ### Added
 - Optional VPN edge configuration on creation
