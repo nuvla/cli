@@ -1,6 +1,11 @@
 # Changelog
 
-## Unreleased
+## [1.0.1] - 02-05-2023
+### Added
+ - Added -v and --version print options
+### Changed
+
+## [1.0.0] - 02-05-2023
 ### Added
  - Added decommissioning timeout
 ### Changed

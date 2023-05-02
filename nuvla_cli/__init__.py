@@ -1,11 +1,17 @@
 """ Nuvla CLI main script """
 import logging
+import importlib.metadata
+from typing import Optional
+from typing_extensions import Annotated
 
 import typer
+from rich.pretty import pprint
 
 from nuvla_cli.common.cli_builder import build_entity_action
 from nuvla_cli.nuvlaio.edge import Edge
 
+
+__version__ = importlib.metadata.version("nuvla-cli")
 
 app_cli = typer.Typer(no_args_is_help=True)
 
@@ -42,3 +48,19 @@ def clear_edges(force: bool = typer.Option(...,
         for nuvla_edge in edges_in_nuvla.resources:
             logger.info(f'Bulk remove Edge {nuvla_edge}')
             edge.remove_edge(nuvla_edge.data.get('id'), force=True)
+
+
+def version_callback(flag: bool):
+    if flag:
+        pprint(f'Nuvla-CLI Version: {__version__}')
+        raise typer.Exit(0)
+
+
+@app_cli.callback()
+def main(
+    version: Annotated[
+            Optional[bool],
+            typer.Option("--version", '-v', callback=version_callback)
+        ] = None,
+):
+    pass
