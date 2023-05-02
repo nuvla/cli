@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    files:
+      - 'pyproject.toml'
 
   workflow_dispatch:
 
@@ -34,7 +36,7 @@ jobs:
           virtualenvs-in-project: true
 
       - name: Build package
-        run: poetry build --format=wheel
+        run: poetry build
 
       - name: Publish package
         run: |
