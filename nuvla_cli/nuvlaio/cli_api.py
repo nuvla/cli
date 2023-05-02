@@ -5,6 +5,7 @@ import logging
 from pathlib import Path
 from typing import Any
 
+import typer
 from nuvla.api import Api
 from rich.prompt import IntPrompt
 
@@ -37,12 +38,18 @@ class CliApi(Api):
             secure: list = []
             with cookie_location.open('r') as file:
                 for line in file.readlines():
+                    self.logger.debug(f'Processing cookie: {line}')
                     if line.startswith('#') or not line.strip():
                         continue
                     else:
-                        clean_line: list = line.strip().replace('\t', ' ').split(' ')
-                        available_cookies.append(clean_line[0])
-                        secure.append((clean_line[3]).lower())
+                        try:
+                            # Processing cookie
+                            clean_line: list = line.strip().replace('\t', ' ').split(' ')
+                            available_cookies.append(clean_line[0])
+                            secure.append((clean_line[3]).lower())
+                        except IndexError as ex:
+                            self.logger.error('Error processing cookies', exc_info=ex)
+                            typer.Exit(1)
 
             if len(available_cookies) > 0:
                 choice = 0

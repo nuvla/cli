@@ -17,6 +17,7 @@ logging.basicConfig(
         format='[%(asctime)s] Line:%(lineno)d %(levelname)s - %(message)s',
         datefmt='%H:%M:%S'
     )
+logger: logging.Logger = logging.getLogger('cli')
 
 
 @app_cli.command(name='clear')
@@ -39,5 +40,5 @@ def clear_edges(force: bool = typer.Option(...,
                                                filter={"tags=='cli.created=True'"})
 
         for nuvla_edge in edges_in_nuvla.resources:
-
-            edge.remove_edge(nuvla_edge.data.get('id'))
+            logger.info(f'Bulk remove Edge {nuvla_edge}')
+            edge.remove_edge(nuvla_edge.data.get('id'), force=True)

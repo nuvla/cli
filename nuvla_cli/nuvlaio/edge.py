@@ -17,6 +17,8 @@ from ..schemas import cli_constants
 
 
 class Edge:
+    DECOMMISSION_TIMEOUT = 60*2  # 2 minutes timeout for decommissioning
+
     def __init__(self, nuvla_api: NuvlaAPI = None):
         self.logger: logging.Logger = logging.getLogger(self.__class__.__name__)
         self.nuvla_api: NuvlaAPI = nuvla_api if nuvla_api else NuvlaAPI()
@@ -207,10 +209,15 @@ class Edge:
             self.logger.info('Decommissioning...')
             self.nuvla_api.get(uuid + "/decommission")
 
+        t_time = time.time()
         while ne_state not in ['DECOMMISSIONED', 'NEW']:
             time.sleep(1)
             ne_state = self.nuvla_api.search(
                 'nuvlabox', filter=f'id=="{uuid}"').resources[0].data['state']
+
+            if time.time() - t_time > self.DECOMMISSION_TIMEOUT:
+                self.logger.warning(f'Timout decommissioning {uuid} edge')
+                return
 
         self.nuvla_api.delete(uuid)
 

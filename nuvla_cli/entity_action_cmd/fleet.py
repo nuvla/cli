@@ -23,8 +23,9 @@ def create_fleet(name: str = typer.Option(..., help='Fleet name desired. Must be
                  count: int = typer.Option(10, help='# of Edges to create within the'
                                                     ' fleet'),
                  dummy: bool = typer.Option(False, help='Create a fleet of dummy edges'),
-                 telemetry_period: int = typer.Option(10*365*24*60*60, help='Expected telemetry period'
-                                                               ' of the involved NuvlaEdges')):
+                 telemetry_period: int = typer.Option(10*365*24*60*60,
+                                                      help='Expected telemetry period'
+                                                           ' of the involved NuvlaEdges')):
     """
     Creates a new Fleet of Edges in Nuvla
     """
@@ -51,8 +52,7 @@ def start_fleet(fleet_name: str = typer.Option(..., help='Fleet name to be start
 @app.command(name='geolocate')
 def geolocate_fleet(name: str = typer.Option(..., help='Fleet name to be geolocated'),
                     country: str = typer.Option(..., help=' Country within to locate the '
-                                                          'fleet')) \
-        -> None:
+                                                          'fleet')) -> None:
     """
     Randomly locates the given fleet within a country
     """
@@ -87,7 +87,6 @@ def remove_fleet(name: str = typer.Option(..., help='Fleet unique name')) -> Non
 def list_fleet() -> None:
     """
     Retrieves and prints the list of fleet names created by CLI
-
     """
     it_edge: Edge = Edge()
     it_edge.list_fleets()

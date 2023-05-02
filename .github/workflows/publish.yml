@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-validator:
+  build-cli:
     runs-on: ubuntu-20.04
 
     steps:
@@ -18,12 +18,20 @@ jobs:
       - name: Setup Python env
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10.6"
+          python-version: "3.10"
+          cache: 'pip'
 
-      - name: Install poetry
-        uses: abatilo/actions-poetry@v2
+      - name: Load cached poetry
+        uses: actions/cache@v2.1.6
         with:
-          poetry-version: "1.2.2"
+          path: ~/.local
+          key: dotlocal-${{ runner.os }}-${{ hashFiles('.github/workflows/main.yml') }}
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
 
       - name: Build package
         run: poetry build --format=wheel
