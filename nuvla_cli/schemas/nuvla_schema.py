@@ -1,7 +1,8 @@
 """ Schema for Nuvla.io configuration """
 from typing import Dict, Optional
 
-from pydantic import BaseSettings, Field, BaseModel
+from pydantic import Field, BaseModel
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from ..common.common import NuvlaID
 from ..schemas.edge_schema import EdgeSchema
@@ -16,6 +17,7 @@ class NuvlaSchema(BaseSettings):
 
 
 class NuvlaIOCLI(BaseModel):
+    model_config = SettingsConfigDict(arbitrary_types_allowed=True)
     edges: Dict[NuvlaID, EdgeSchema]
     user: str
     credentials: str

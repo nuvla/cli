@@ -1,22 +1,25 @@
 """ Common utilities for CLI """
+import logging
+from typing import List, NoReturn, Any
+from dataclasses import dataclass
 
-from typing import List, NoReturn
+from pydantic_core import CoreSchema, core_schema
+from typing_extensions import get_args, get_origin
+from pydantic import BaseModel, GetCoreSchemaHandler, ValidatorFunctionWrapHandler
+from pydantic_core import core_schema
+
+
+logger: logging.Logger = logging.getLogger('tests')
 
 
 class NuvlaID(str):
-    @classmethod
-    def __get_validators__(cls):
-        yield cls.validate_nuvla_id
+    id: str
 
     @classmethod
-    def validate_nuvla_id(cls, nuvla_id: str) -> str:
-        id_parts: List[str] = nuvla_id.split('/')
-        if len(id_parts) != 2:
-            print('Validator called')
-            raise ValueError("Nuvla ID's format must me a string with format: "
-                             "<resource_id>/<unique-identifier>")
-
-        return nuvla_id
+    def __get_pydantic_core_schema__(
+            cls, source: type[Any], handler: GetCoreSchemaHandler
+    ) -> core_schema.CoreSchema:
+        return core_schema.no_info_after_validator_function(cls, handler(str))
 
 
 class Colors:

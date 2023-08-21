@@ -41,10 +41,10 @@ class NuvlaIO:
         nuvla_session_info: CimiResource = \
             self.nuvla_client.get(self.nuvla_client.current_session())
 
-        self.session_info = SessionSchema.parse_obj(nuvla_session_info.data)
+        self.session_info = SessionSchema.model_validate(nuvla_session_info.data)
         print(self.session_info)
         nuvla_user_info: CimiResource = self.nuvla_client.get(self.session_info.user)
-        self.user_info = UserSchema.parse_obj(nuvla_user_info.data)
+        self.user_info = UserSchema.model_validate(nuvla_user_info.data)
 
     def log_to_nuvla(self, key: str, secret: str, config_file: str) -> NoReturn:
         """

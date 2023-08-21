@@ -2,7 +2,7 @@
 """
 from typing import List
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from nuvla_cli.common.common import NuvlaID
 
@@ -20,6 +20,8 @@ engine_cte: EngineConstants = EngineConstants()
 
 
 class EngineSchema(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
     JOB_PORT: int = 5000
     AGENT_PORT: int = 5500
     NUVLABOX_UUID: NuvlaID = ''

@@ -64,7 +64,7 @@ class Edge:
             filter={f"tags=='{cli_constants.CLI_TAG}'"})
 
         for i in cli_edges.resources:
-            it_edge: EdgeSchema = EdgeSchema.parse_obj(i.data)
+            it_edge: EdgeSchema = EdgeSchema.model_validate(i.data)
             it_edge.dummy = cli_constants.CLI_DUMMY_TAG in i.data.get('tags')
 
             self.edges[it_edge.uuid] = it_edge
