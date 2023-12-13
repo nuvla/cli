@@ -19,4 +19,5 @@ class EdgeSchema(BaseModel):
     vpn_server_id: str = \
         Field('infrastructure-service/eb8e09c2-8387-4f6d-86a4-ff5ddf3d07d7',
               env='VPN_SERVER_ID', alias='vpn-server-id')
-    refresh_interval: Optional[int] = Field(30, alias='refresh-interval')
+    refresh_interval: Optional[int] = Field(60, alias='refresh-interval')
+    heartbeat_interval: Optional[int] = Field(20, alias='heartbeat-interval')

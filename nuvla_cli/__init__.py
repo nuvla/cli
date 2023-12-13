@@ -63,4 +63,7 @@ def main(
             typer.Option("--version", '-v', callback=version_callback)
         ] = None,
 ):
+    """
+    Main to serve as a callback for version printing
+    """
     pass
