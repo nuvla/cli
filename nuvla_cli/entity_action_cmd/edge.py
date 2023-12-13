@@ -27,7 +27,7 @@ def create(name: str = typer.Option('', help='Edges name to be created'),
                                                    'fleet'),
            vpn: bool = typer.Option(False, help='Whether or not to create the Edge '
                                                 'with VPN associated'),
-           telemetry_period: int = typer.Option(30, help='Expected telemetry period'
+           telemetry_period: int = typer.Option(60, help='Expected telemetry period'
                                                          ' of the involved NuvlaEdges')
     ):
     """
